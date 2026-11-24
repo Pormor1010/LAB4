@@ -43,7 +43,7 @@
 
 ## ติดตั้ง ngspice
 
-แอปจะค้นหา ngspice ตามลำดับ: `NGSPICE_EXE` env var → `tools/ngspice/Spice64/bin/ngspice.exe` → `tools/ngspice/bin/ngspice.exe` → `ngspice` ใน PATH
+แอปจะค้นหา ngspice ตามลำดับ: `NGSPICE_BIN` env var → `tools/ngspice/Spice64/bin/ngspice.exe` → `ngspice` ใน PATH
 
 ตัวอย่าง Windows (portable):
 1. ดาวน์โหลด ngspice Windows zip จาก https://ngspice.sourceforge.io/download.html
@@ -52,7 +52,7 @@
 
 หรือถ้าติดตั้งในระบบแล้ว ให้ตั้งค่า:
 ```powershell
-$env:NGSPICE_EXE="C:\path\to\ngspice.exe"
+$env:NGSPICE_BIN="C:\path\to\ngspice.exe"
 ```
 
 ## Setup
@@ -136,15 +136,12 @@ tools/                  local ngspice portable (ไม่ commit)
 - ค่าตัด −3 dB หาได้เฉพาะเมื่ออยู่ในช่วง sweep; ถ้าไม่พบจะแสดง "ไม่พบในช่วง sweep" ไม่เดาค่า
 - ขอบเขต Lab 04: CE voltage-divider reference circuit เดียว, ไม่มี drag-drop editor, ไม่มี free-form wiring, ไม่มี AC สำหรับ bias modes อื่น, ไม่มี FET/custom solver/animated overlay/public deploy
 
-## ส่วนที่ AI ช่วยพัฒนา (Lab 04)
+## ส่วนที่ AI ช่วยพัฒนา / นักศึกษาตรวจ (Lab 04)
 
-- วางแผนสถาปัตยกรรมแยก `spice_engine.py` / `charts.py` / web layer ตาม AGENTS.md
-- เขียน netlist builder + ngspice subprocess adapter + wrdata parser + SVG charts จากข้อมูลจริง
-- เพิ่ม `/simulate` route, UI simulator panel, provenance/netlist/log evidence, error handling ภาษาไทย
-- เขียน tests (`tests/test_simulator.py`) ก่อน/ควบคู่กับ behavior สำคัญ และรัน regression ทั้งหมด
-- ตรวจ B1–B8 ด้วย OpenCode browser tool จริงและบันทึกหลักฐานอย่างซื่อสัตย์ (Playwright MCP ไม่พร้อมใช้งาน)
-
-นักศึกษาควรตรวจสอบ netlist, ผล ngspice, การแปลผล gain/phase/cutoff, และความตรงของหลักฐานก่อนส่งงาน
+- AI: วางสถาปัตยกรรม `spice_engine.py` / `charts.py` / web layer ตาม `AGENTS.md` และเขียน netlist builder + subprocess adapter + wrdata parser + SVG charts จากข้อมูลจริง
+- AI: เพิ่ม `/simulate` route, UI ผลลัพธ์รวม, provenance/netlist/log, error ภาษาไทย และ tests (`test_simulator.py`, `test_web.py`) พร้อมรัน regression 68 tests OK
+- AI: ตรวจ B1–B8 ด้วย OpenCode browser tool จริง บันทึกหลักฐานใน `docs/captures/` และระบุว่า Playwright MCP NOT RUN อย่างซื่อสัตย์
+- นักศึกษา: ตรวจ netlist, ผล ngspice, การแปล gain/phase/cutoff, ความตรงของหลักฐาน และลองเปลี่ยนค่าแล้วดูกราฟเปลี่ยนจริงก่อนส่งงาน
 
 ## ลิงก์ส่งงาน
 
