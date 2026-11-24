@@ -150,5 +150,5 @@ tools/                  local ngspice portable (ไม่ commit)
 
 - GitHub (Lab 04): <https://github.com/Pormor1010/LAB4>
 - Commit SHA ของงาน Lab 03: `9e43ed8` (feat(lab03): add fixed and emitter bias modes)
-- Commit SHA ของโค้ด Lab 04: จะถูกเติมใน commit ถัดไปหลัง push สำเร็จ
+- Commit SHA ของโค้ด Lab 04: `224663e99ff544ae8af829711377122c25d0cc2c`
 
