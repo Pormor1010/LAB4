@@ -121,6 +121,15 @@ Harness ชั่วคราว: `static/_b1_modes.html` และ `static/_mob
 | B7 · Invalid / Fail | ตั้ง `sp_re = 0` แล้วกดรัน DC | RE = 0 kΩ (นอกช่วง 0.01–100 kΩ) | ต้องแจ้ง error ภาษาไทย ไม่ล่ม และไม่โชว์ผลสำเร็จ/กราฟเก่า | `Simulation Error` · **"ข้อมูลไม่ถูกต้อง: ค่า RE ต้องอยู่ระหว่าง 0.01–100 kΩ ไม่มีการแสดงกราฟหรือตัวเลขจากรอบก่อนหน้า เพราะรอบนี้ไม่สำเร็จ"** · ไม่มี `.sim-results`, ไม่มี SVG chart | `docs/captures/b7_error.png` | PASS |
 | B8 · UI | เปิด `/static/_mobile_preview.html` ในแท็บเดียว: กดปุ่ม **Desktop full-width** (DC `.op`) หรือ **Phone 390px** (AC `.ac`) เพื่อสลับ viewport แบบเต็มจอ; ทั้งคู่ POST `/simulate` จริง | Desktop full-width + Phone 390 px, ทั้งคู่ POST `/simulate` จริง | อ่านง่าย กราฟ/หน่วย/ปุ่มไม่ถูกตัดจนใช้งานไม่ได้; เปลี่ยน analysis ได้ | Desktop แสดงตาราง DC + status `ngspice 41 · Q2N2222` ครบ; 390 px แสดง AC metrics + Bode plot ใน `chart-scroll` (เลื่อนแนวนอนได้) ไม่มี overflow ตัดหัวตาราง | `docs/captures/b8_desktop_full.png` (desktop เต็มจอ), `docs/captures/b8_phone_full.png` / `b8_mobile_chart.png` (390px เต็มจอ); กราฟเดสก์ทอป `docs/captures/b4_ac_chart.png` | PASS (มีข้อจำกัด: ไม่ใช่ device emulation แบบ DevTools) |
 
+### ภาพก่อน/หลัง UI และกราฟจาก browser จริง
+
+| ช่วง | หลักฐาน | สิ่งที่เห็น |
+|---|---|---|
+| ก่อนปรับ | `docs/screenshots/02-result.jpeg` | ผล DC Bias แบบ standalone ยังไม่มี section `ผลลัพธ์รวม` ร่วมกับ SPICE |
+| หลังปรับ | `docs/captures/b2_dc.png` | ฟอร์มยังแยก แต่ตารางคำนวณ + SPICE + Analytical อยู่ใน `#results` section เดียวกัน |
+
+กราฟที่จับจาก browser จริง (ไม่ใช่ mock): `docs/captures/b4_ac_chart.png`, `docs/captures/b5_tran_chart.png`, `docs/captures/b6_amp20_chart.png`, `docs/captures/b8_mobile_chart.png`
+
 ### หมายเหตุความซื่อสัตย์ของการทดสอบ
 
 - **Playwright MCP**: **NOT RUN** / ไม่ปรากฏในสภาพแวดล้อมนี้ — ไม่ได้อ้างว่าเป็นผล Playwright MCP
