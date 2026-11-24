@@ -1,0 +1,105 @@
+﻿python.exe : test_larger_re_lowers_ic_a4 (test_dc_bias.TestEmitterBias.test_larger_re_lowers_ic_a4) ... ok
+At line:1 char:1
++ & .\.venv\Scripts\python.exe -m unittest discover -s tests -v 2>&1 |  ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (test_larger_re_...s_ic_a4) ... ok:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+test_reference_operating_point_a3 (test_dc_bias.TestEmitterBias.test_reference_operating_point_a3) ... ok
+test_zero_or_negative_re_rejected (test_dc_bias.TestEmitterBias.test_zero_or_negative_re_rejected) ... ok
+test_reference_operating_point_a2 (test_dc_bias.TestFixedBias.test_reference_operating_point_a2) ... ok
+test_saturation_warning (test_dc_bias.TestFixedBias.test_saturation_warning) ... ok
+test_zero_or_negative_rb_rejected (test_dc_bias.TestFixedBias.test_zero_or_negative_rb_rejected) ... ok
+test_nan_and_infinity_rejected (test_dc_bias.TestModuleInputCoercion.test_nan_and_infinity_rejected) ... ok
+test_non_numeric_string_rejected (test_dc_bias.TestModuleInputCoercion.test_non_numeric_string_rejected) ... ok
+test_invalid_common_inputs_rejected 
+(test_dc_bias.TestNewModesShareCommonValidation.test_invalid_common_inputs_rejected) ... ok
+test_vbe_must_be_below_vcc (test_dc_bias.TestNewModesShareCommonValidation.test_vbe_must_be_below_vcc) ... ok
+test_cutoff_when_vth_below_vbe (test_dc_bias.TestOperatingRegion.test_cutoff_when_vth_below_vbe) ... ok
+test_region_active_no_warning (test_dc_bias.TestOperatingRegion.test_region_active_no_warning) ... ok
+test_saturation_warning (test_dc_bias.TestOperatingRegion.test_saturation_warning) ... ok
+test_reference_operating_point (test_dc_bias.TestReferenceOperatingPoint.test_reference_operating_point) ... ok
+test_invalid_vcc_and_beta_rejected (test_dc_bias.TestValidation.test_invalid_vcc_and_beta_rejected) ... ok
+test_vbe_must_be_below_vcc (test_dc_bias.TestValidation.test_vbe_must_be_below_vcc) ... ok
+test_zero_and_negative_resistance_rejected (test_dc_bias.TestValidation.test_zero_and_negative_resistance_rejected) 
+... ok
+test_all_three_analyses_have_the_same_circuit 
+(test_simulator.TestNetlist.test_all_three_analyses_have_the_same_circuit) ... ok
+test_analysis_directive_matches_request (test_simulator.TestNetlist.test_analysis_directive_matches_request) ... ok
+test_unknown_analysis_is_rejected (test_simulator.TestNetlist.test_unknown_analysis_is_rejected) ... ok
+test_non_numeric_is_rejected (test_simulator.TestParseParams.test_non_numeric_is_rejected) ... ok
+test_out_of_range_frequency_is_rejected (test_simulator.TestParseParams.test_out_of_range_frequency_is_rejected) ... ok
+test_units_are_converted_to_si (test_simulator.TestParseParams.test_units_are_converted_to_si) ... ok
+test_zero_re_is_rejected_before_netlist (test_simulator.TestParseParams.test_zero_re_is_rejected_before_netlist) ... ok
+test_ac_computes_gain_phase_and_corners 
+(test_simulator.TestParsersUseRealColumnLayout.test_ac_computes_gain_phase_and_corners) ... ok
+test_ac_reports_missing_corner_instead_of_inventing_one 
+(test_simulator.TestParsersUseRealColumnLayout.test_ac_reports_missing_corner_instead_of_inventing_one) ... ok
+test_dc_flags_saturation_from_voltage 
+(test_simulator.TestParsersUseRealColumnLayout.test_dc_flags_saturation_from_voltage) ... ok
+test_dc_parses_headers_and_derives_region 
+(test_simulator.TestParsersUseRealColumnLayout.test_dc_parses_headers_and_derives_region) ... ok
+test_tran_measures_amplitude_and_inversion 
+(test_simulator.TestParsersUseRealColumnLayout.test_tran_measures_amplitude_and_inversion) ... ok
+test_ac_run_reports_gain_and_corners_inside_sweep 
+(test_simulator.TestRealNgspiceRuns.test_ac_run_reports_gain_and_corners_inside_sweep) ... ok
+test_dc_run_matches_a_forward_active_operating_point 
+(test_simulator.TestRealNgspiceRuns.test_dc_run_matches_a_forward_active_operating_point) ... ok
+test_larger_re_lowers_collector_current (test_simulator.TestRealNgspiceRuns.test_larger_re_lowers_collector_current) 
+... ok
+test_missing_engine_raises_instead_of_faking_success 
+(test_simulator.TestRealNgspiceRuns.test_missing_engine_raises_instead_of_faking_success) ... ok
+test_transient_output_is_inverted_against_input 
+(test_simulator.TestRealNgspiceRuns.test_transient_output_is_inverted_against_input) ... ok
+test_real_cant_find_error_is_still_reported 
+(test_simulator.TestRunLogClassification.test_real_cant_find_error_is_still_reported) ... ok
+test_spinit_note_is_not_a_failure (test_simulator.TestRunLogClassification.test_spinit_note_is_not_a_failure) ... ok
+test_ac_result_renders_chart_from_run_data 
+(test_simulator.TestSimulatorRoute.test_ac_result_renders_chart_from_run_data) ... ok
+test_dc_result_is_labelled_as_spice_and_shows_reference 
+(test_simulator.TestSimulatorRoute.test_dc_result_is_labelled_as_spice_and_shows_reference) ... ok
+test_engine_failure_is_reported_without_stale_chart 
+(test_simulator.TestSimulatorRoute.test_engine_failure_is_reported_without_stale_chart) ... ok
+test_index_shows_simulator_form_and_three_analyses 
+(test_simulator.TestSimulatorRoute.test_index_shows_simulator_form_and_three_analyses) ... ok
+test_invalid_re_shows_error_and_no_chart (test_simulator.TestSimulatorRoute.test_invalid_re_shows_error_and_no_chart) 
+... ok
+test_tran_result_renders_waveform_chart (test_simulator.TestSimulatorRoute.test_tran_result_renders_waveform_chart) 
+... ok
+test_unknown_analysis_is_rejected (test_simulator.TestSimulatorRoute.test_unknown_analysis_is_rejected) ... ok
+test_post_returns_computed_values (test_web.TestCalculate.test_post_returns_computed_values) ... ok
+test_form_labels_and_button_are_thai (test_web.TestDisplayAndLabels.test_form_labels_and_button_are_thai) ... ok
+test_ib_displayed_in_microamps (test_web.TestDisplayAndLabels.test_ib_displayed_in_microamps) ... ok
+test_region_is_shown_in_thai (test_web.TestDisplayAndLabels.test_region_is_shown_in_thai) ... ok
+test_vce_cell_has_value_and_unit (test_web.TestDisplayAndLabels.test_vce_cell_has_value_and_unit) ... ok
+test_warning_block_reaches_page (test_web.TestDisplayAndLabels.test_warning_block_reaches_page) ... ok
+test_a3_operating_point (test_web.TestEmitterMode.test_a3_operating_point) ... ok
+test_a4_larger_re_lowers_ic (test_web.TestEmitterMode.test_a4_larger_re_lowers_ic) ... ok
+test_a2_operating_point_and_mode_label (test_web.TestFixedMode.test_a2_operating_point_and_mode_label) ... ok
+test_junk_in_unused_fields_is_ignored (test_web.TestFixedMode.test_junk_in_unused_fields_is_ignored) ... ok
+test_unused_fields_are_not_required (test_web.TestFixedMode.test_unused_fields_are_not_required) ... ok
+test_zero_rb_shows_thai_error_without_stale_result 
+(test_web.TestFixedMode.test_zero_rb_shows_thai_error_without_stale_result) ... ok
+test_get_index_shows_form (test_web.TestIndex.test_get_index_shows_form) ... ok
+test_missing_field_shows_error (test_web.TestInvalidInput.test_missing_field_shows_error) ... ok
+test_non_numeric_shows_error (test_web.TestInvalidInput.test_non_numeric_shows_error) ... ok
+test_zero_vcc_shows_error (test_web.TestInvalidInput.test_zero_vcc_shows_error) ... ok
+test_emitter_mode_shows_rb_and_re (test_web.TestModeSelection.test_emitter_mode_shows_rb_and_re) ... ok
+test_fixed_mode_shows_rb_and_hides_divider_fields 
+(test_web.TestModeSelection.test_fixed_mode_shows_rb_and_hides_divider_fields) ... ok
+test_index_offers_all_three_modes (test_web.TestModeSelection.test_index_offers_all_three_modes) ... ok
+test_unknown_mode_get_shows_error (test_web.TestModeSelection.test_unknown_mode_get_shows_error) ... ok
+test_missing_mode_is_rejected (test_web.TestModeValidation.test_missing_mode_is_rejected) ... ok
+test_unknown_mode_is_not_treated_as_divider (test_web.TestModeValidation.test_unknown_mode_is_not_treated_as_divider) 
+... ok
+test_calculator_result_is_inside_unified_results_section 
+(test_web.TestUnifiedResults.test_calculator_result_is_inside_unified_results_section) ... ok
+test_dc_run_shows_calculator_and_spice_in_one_section 
+(test_web.TestUnifiedResults.test_dc_run_shows_calculator_and_spice_in_one_section) ... ok
+test_simulator_form_carries_calculator_values 
+(test_web.TestUnifiedResults.test_simulator_form_carries_calculator_values) ... ok
+
+----------------------------------------------------------------------
+Ran 68 tests in 0.412s
+
+OK

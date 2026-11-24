@@ -1,0 +1,36 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Flask / test artifacts
+instance/
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Local bundled tools / binaries (ngspice portable, etc.)
+tools/
+
+# Secrets & local config
+.env
+.env.*
+*.key
+
+# Agent scratch (plan ledger)
+.superpowers/
+
+# Browser-acceptance harness (local only, not uploaded)
+static/_b1_modes.html
+static/_mobile_preview.html
+
+# Editor / OS
+.vscode/
+.idea/
+Thumbs.db
+desktop.ini

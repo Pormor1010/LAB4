@@ -1,0 +1,279 @@
+﻿<!doctype html>
+<html lang="th">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>BJT Amplifier Simulator · Lab 04</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+<main>
+  <header class="page-head">
+    <h1>BJT Amplifier Simulator</h1>
+    <p class="subtitle">วงจร Common-Emitter — DC Bias ด้วย Python และการจำลองจริงด้วย ngspice</p>
+  </header>
+
+  <section class="panel" id="dc-bias">
+    <h2>DC Bias Calculator <span class="tag tag-analytical">Analytical</span></h2>
+    <p class="subtitle">เลือกวงจรไบอัสแล้วคำนวณด้วยสมการประมาณจาก Python (Lab 02–03)</p>
+
+    <form method="get" action="/" class="mode-picker">
+      <label for="mode">โหมดวงจร
+        <select id="mode" name="mode">
+          {% for key, info in modes.items() %}
+          <option value="{{ key }}"{% if key == mode %} selected{% endif %}>{{ info.label }}</option>
+          {% endfor %}
+        </select>
+      </label>
+      <button type="submit" class="secondary">เปลี่ยนโหมด</button>
+    </form>
+
+    <p class="hint">{{ modes[mode].hint }}</p>
+
+    {% if error %}
+    <div class="alert error">
+      <strong>โหมด: {{ modes[mode].label }}</strong>
+      <p>{{ error }}</p>
+    </div>
+    {% endif %}
+
+    {% if warnings %}
+    <div class="alert warning">
+      <ul>
+        {% for w in warnings %}<li>{{ w }}</li>{% endfor %}
+      </ul>
+    </div>
+    {% endif %}
+
+    <form method="post" action="/calculate">
+      <input type="hidden" name="mode" value="{{ mode }}">
+      <div class="grid">
+        {% for key in common_fields %}
+        <label>{{ fields[key].label }}{% if fields[key].unit %} [{{ fields[key].unit }}]{% endif %}
+          <span>{{ fields[key].hint }}</span>
+          <input type="text" name="{{ key }}" value="{{ form[key] }}">
+        </label>
+        {% endfor %}
+        {% for key in modes[mode].resistors %}
+        <label>{{ fields[key].label }}{% if fields[key].unit %} [{{ fields[key].unit }}]{% endif %}
+          <span>{{ fields[key].hint }}</span>
+          <input type="text" name="{{ key }}" value="{{ form[key] }}">
+        </label>
+        {% endfor %}
+      </div>
+      <p class="hint">ตัวต้านทานกรอกเป็น kΩ (1 MΩ = 1,000 kΩ) — ระบบแปลงเป็น Ω ก่อนคำนวณ</p>
+      <button type="submit">คำนวณ DC Bias</button>
+    </form>
+  </section>
+
+  <section class="panel" id="simulator">
+    <h2>CE Amplifier Simulator <span class="tag tag-spice">ngspice</span></h2>
+    <p class="subtitle">
+      วงจรอ้างอิง CE Voltage Divider หนึ่งวงจร (NPN Q1, R1/R2/RC/RE, Cin/Cout, RL)
+      — ผลทุกตัวเลขและทุกกราฟในส่วนนี้มาจากการรัน ngspice จริง
+    </p>
+
+    <div class="circuit-note">
+      <p><strong>จุดวัดสัญญาณ:</strong> Vin = โหนด <code>src</code> (ก่อน Cin) ·
+        Vout = โหนด <code>out</code> (หลัง Cout, คร่อม RL) · Gain = |Vout / Vin|</p>
+      <p><strong>BJT model:</strong> <code>Q2N2222</code> — เขียนลงใน netlist ทุกครั้ง
+        (ดูรายละเอียดใน README) · Baseline ไม่มี Emitter Bypass Capacitor</p>
+    </div>
+
+    <form method="post" action="/simulate" class="sim-form" id="sim-form">
+      <input type="hidden" name="mode" value="{{ mode }}">
+      {% for key in common_fields %}
+      <input type="hidden" name="{{ key }}" value="{{ form[key] }}">
+      {% endfor %}
+      {% for key in modes[mode].resistors %}
+      <input type="hidden" name="{{ key }}" value="{{ form[key] }}">
+      {% endfor %}
+      {% for title, keys in sim_groups %}
+      <fieldset>
+        <legend>{{ title }}</legend>
+        <div class="grid">
+          {% for key in keys %}
+          <label>{{ sim_fields[key].label }}{% if sim_fields[key].unit %} [{{ sim_fields[key].unit }}]{% endif %}
+            <span>{{ sim_fields[key].hint }}</span>
+            <input type="text" name="sp_{{ key }}" value="{{ sim_form['sp_' ~ key] }}">
+          </label>
+          {% endfor %}
+        </div>
+      </fieldset>
+      {% endfor %}
+
+      <p class="hint">ค่าในส่วนนี้เป็นอินพุตของ ngspice โดยตรง — ไม่ขึ้นกับโหมด DC Bias ด้านบน</p>
+
+      <div class="analysis-buttons" role="group" aria-label="เลือกโหมดวิเคราะห์">
+        {% for key, info in analyses.items() %}
+        <button type="submit" name="analysis" value="{{ key }}"
+                class="analysis-button{% if sim_analysis == key %} active{% endif %}">
+          {{ info.notation }} · {{ info.title }}
+        </button>
+        {% endfor %}
+      </div>
+    </form>
+  </section>
+
+  <section class="panel" id="results">
+    <h2>ผลลัพธ์รวม <span class="tag tag-analytical">Analytical</span> <span class="tag tag-spice">ngspice</span></h2>
+    <p class="subtitle">ตารางคำนวณ DC Bias และผลจำลองแสดงในหน้าเดียว — ฟอร์มทั้งสองยังแยกตามเดิม</p>
+
+    {% if result %}
+    <section class="results">
+      <h3>DC Bias Results</h3>
+      <p class="mode-tag">โหมด: {{ modes[mode].label }}</p>
+      <p class="hint">ผลจากฟอร์ม DC Bias ด้านบน — ตาราง Analytical ถัดไปเป็นค่าอ้างอิงสำหรับวงจร CE ใน simulator</p>
+      <table>
+        <tbody>
+          <tr><th>VB</th><td>{{ result.vb }} V</td></tr>
+          <tr><th>VE</th><td>{{ result.ve }} V</td></tr>
+          <tr><th>VC</th><td>{{ result.vc }} V</td></tr>
+          <tr><th>VCE</th><td>{{ result.vce }} V</td></tr>
+          <tr><th>IC</th><td>{{ result.ic }} mA</td></tr>
+          <tr><th>IE</th><td>{{ result.ie }} mA</td></tr>
+          <tr><th>IB</th><td>{{ result.ib }} µA</td></tr>
+          <tr><th>Operating Region</th><td>{{ result.region }}</td></tr>
+        </tbody>
+      </table>
+    </section>
+    {% endif %}
+
+    {% if not result and not sim and not sim_error %}
+    <p class="hint">ยังไม่มีผลลัพธ์ — กด “คำนวณ DC Bias” หรือเลือก analysis ด้านบนเพื่อรัน ngspice</p>
+    {% endif %}
+
+    {% if sim_error %}
+    <div class="alert error sim-status" role="alert">
+      <strong>Simulation Error</strong>
+      <p>{{ sim_error }}</p>
+      <p class="hint">ไม่มีการแสดงกราฟหรือตัวเลขจากรอบก่อนหน้า เพราะรอบนี้ไม่สำเร็จ</p>
+    </div>
+    {% endif %}
+
+    {% if sim %}
+    <section class="results sim-results" aria-live="polite">
+      <div class="status-bar">
+        <span class="status-ok">Success</span>
+        <span>{{ sim.analysis_label }} <code>{{ sim.command }}</code></span>
+        <span>Engine: <strong>{{ sim.engine }}</strong></span>
+        <span>Model: <code>{{ sim.model }}</code></span>
+        <span>ใช้เวลา {{ sim.elapsed_s }} s</span>
+      </div>
+      <p class="provenance">
+        ที่มาของผล: ngspice output ของรอบนี้ ({{ sim.started_at }}) ·
+        โฟลเดอร์รัน <code>{{ sim.run_dir }}</code>
+      </p>
+
+      {% if sim.warnings %}
+      <div class="alert warning">
+        <ul>
+          {% for w in sim.warnings %}<li>{{ w }}</li>{% endfor %}
+        </ul>
+      </div>
+      {% endif %}
+
+      {% if sim.dc %}
+      <h3>DC Operating Point (.op)</h3>
+      <div class="compare">
+        <table>
+          <thead>
+            <tr><th>ค่า</th><th>SPICE (ngspice)</th></tr>
+          </thead>
+          <tbody>
+            <tr><th>VB</th><td>{{ sim.dc.vb }} V</td></tr>
+            <tr><th>VE</th><td>{{ sim.dc.ve }} V</td></tr>
+            <tr><th>VC</th><td>{{ sim.dc.vc }} V</td></tr>
+            <tr><th>VCE</th><td>{{ sim.dc.vce }} V</td></tr>
+            <tr><th>VBE</th><td>{{ sim.dc.vbe }} V</td></tr>
+            <tr><th>IC</th><td>{{ sim.dc.ic }} mA</td></tr>
+            <tr><th>IE</th><td>{{ sim.dc.ie }} mA</td></tr>
+            <tr><th>IB</th><td>{{ sim.dc.ib }} µA</td></tr>
+            <tr><th>Operating Region</th><td>{{ sim.dc.region }}</td></tr>
+          </tbody>
+        </table>
+
+        {% if sim.reference %}
+        <table class="reference-table">
+          <thead>
+            <tr><th>ค่า</th><th>Analytical (β={{ sim.reference.beta }}, VBE={{ sim.reference.vbe }} V)</th></tr>
+          </thead>
+          <tbody>
+            <tr><th>VB</th><td>{{ sim.reference.vb }} V</td></tr>
+            <tr><th>VE</th><td>{{ sim.reference.ve }} V</td></tr>
+            <tr><th>VC</th><td>{{ sim.reference.vc }} V</td></tr>
+            <tr><th>VCE</th><td>{{ sim.reference.vce }} V</td></tr>
+            <tr><th>VBE</th><td>{{ sim.reference.vbe }} V</td></tr>
+            <tr><th>IC</th><td>{{ sim.reference.ic }} mA</td></tr>
+            <tr><th>IE</th><td>{{ sim.reference.ie }} mA</td></tr>
+            <tr><th>IB</th><td>{{ sim.reference.ib }} µA</td></tr>
+            <tr><th>Operating Region</th><td>{{ sim.reference.region }}</td></tr>
+          </tbody>
+        </table>
+        {% endif %}
+      </div>
+      <p class="hint">
+        ทั้งสองคอลัมน์มาจากโมเดลต่างกัน: SPICE ใช้การ์ด BJT ของ Q2N2222 (BF=200, มี RB/RC/RE และ Early effect)
+        ส่วน Analytical ใช้สมการ Forward-Active ที่ β คงที่ — ตัวเลขจึงไม่จำเป็นต้องเท่ากันทุกหลัก
+      </p>
+      {% endif %}
+
+      {% if sim.ac %}
+      <h3>AC Frequency Response (.ac)</h3>
+      <div class="metrics">
+        <div class="metric"><b>Midband gain</b><span>{{ sim.ac.midband_gain }}× ({{ sim.ac.midband_gain_db }} dB)</span></div>
+        <div class="metric"><b>Midband phase</b><span>{{ sim.ac.midband_phase }}°{% if sim.ac.inverting %} (กลับเฟส){% endif %}</span></div>
+        <div class="metric"><b>f<sub>L</sub> (−3 dB)</b><span>{{ sim.ac.f_low }}</span></div>
+        <div class="metric"><b>f<sub>H</sub> (−3 dB)</b><span>{{ sim.ac.f_high }}</span></div>
+        <div class="metric"><b>Bandwidth</b><span>{{ sim.ac.bandwidth }}</span></div>
+        <div class="metric"><b>Sweep</b><span>{{ sim.ac.sweep }} · {{ sim.ac.points }} จุด</span></div>
+      </div>
+      <figure class="chart-figure">
+        <div class="chart-scroll" tabindex="0" role="region" aria-label="Bode plot จาก ngspice">
+          {{ sim.chart | safe }}
+        </div>
+        <figcaption>Bode plot จากข้อมูล ngspice ของรอบนี้ — แกนความถี่เป็น log scale ·
+          Gain วัดจาก Vin = โหนด <code>src</code> ถึง Vout = โหนด <code>out</code></figcaption>
+      </figure>
+      <p class="hint">
+        จุดตัด −3 dB หาได้เฉพาะเมื่อเส้นกราฟตัดระดับ midband − 3 dB ภายในช่วง sweep
+        ถ้าไม่พบ ระบบจะแสดง “ไม่พบในช่วง sweep” แทนการสร้างตัวเลขขึ้นเอง
+      </p>
+      {% endif %}
+
+      {% if sim.tran %}
+      <h3>Transient Response (.tran)</h3>
+      <div class="metrics">
+        <div class="metric"><b>Vin peak</b><span>{{ sim.tran.vin_peak }} mV</span></div>
+        <div class="metric"><b>Vout peak</b><span>{{ sim.tran.vout_peak }} mV</span></div>
+        <div class="metric"><b>Gain (peak ratio)</b><span>{{ sim.tran.gain }}×</span></div>
+        <div class="metric"><b>เฟส</b><span>{% if sim.tran.inverting %}กลับเฟส (180°){% else %}ไม่กลับเฟส{% endif %}</span></div>
+        <div class="metric"><b>ช่วงเวลา</b><span>0 – {{ sim.tran.tstop_ms }} ms</span></div>
+        <div class="metric"><b>จำนวนจุด</b><span>{{ sim.tran.points }}</span></div>
+      </div>
+      <figure class="chart-figure">
+        <div class="chart-scroll" tabindex="0" role="region" aria-label="Waveform จาก ngspice">
+          {{ sim.chart | safe }}
+        </div>
+        <figcaption>Vin/Vout ตามเวลาจาก ngspice ของรอบนี้ — ค่า peak วัดจากช่วง steady state ครึ่งหลัง</figcaption>
+      </figure>
+      {% endif %}
+
+      <details class="evidence">
+        <summary>หลักฐาน: netlist ที่ส่งให้ ngspice และท้าย run log</summary>
+        <h4>Netlist ({{ sim.command }})</h4>
+        <pre><code>{{ sim.netlist }}</code></pre>
+        <h4>ท้าย run log</h4>
+        <pre><code>{{ sim.log_tail }}</code></pre>
+      </details>
+    </section>
+    {% endif %}
+  </section>
+
+  <footer class="page-foot">
+    <p>ENG29 2121 · Lab 04 — ผลคำนวณ Analytical มาจาก <code>dc_bias.py</code>,
+      ผลจำลองมาจาก <code>spice_engine.py</code> + ngspice</p>
+  </footer>
+</main>
+</body>
+</html>
